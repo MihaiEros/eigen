@@ -74,6 +74,7 @@ import { ShowArtistsQueryRenderer, ShowArtworksQueryRenderer, ShowMoreInfoQueryR
 import { ShowQueryRenderer } from "./Scenes/Show/Show"
 import { VanityURLEntityRenderer } from "./Scenes/VanityURL/VanityURLEntity"
 
+import { ConversationDetailsQueryRenderer } from "./Containers/ConversationDetails"
 import { ViewingRoomQueryRenderer } from "./Scenes/ViewingRoom/ViewingRoom"
 import { ViewingRoomArtworkQueryRenderer } from "./Scenes/ViewingRoom/ViewingRoomArtwork"
 import { ViewingRoomArtworksQueryRenderer } from "./Scenes/ViewingRoom/ViewingRoomArtworks"
@@ -173,6 +174,14 @@ const Conversation: React.FC<ConversationProps> = screenTrack<ConversationProps>
     context_screen_owner_type: Schema.OwnerEntityTypes.Conversation,
   }
 })(ConversationQueryRenderer)
+
+const Details: React.SFC<ConversationProps> = screenTrack<ConversationProps>((props) => {
+  return {
+    context_screen: Schema.PageNames.ConversationPage,
+    context_screen_owner_id: props.conversationID,
+    context_screen_owner_type: Schema.OwnerEntityTypes.Conversation,
+  }
+})(ConversationDetailsQueryRenderer)
 
 /*
  * Route bid/register requests coming from the Emission pod to either a BidFlow
