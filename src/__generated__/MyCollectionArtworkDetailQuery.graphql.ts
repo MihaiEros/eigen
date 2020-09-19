@@ -1,11 +1,13 @@
 /* tslint:disable */
 /* eslint-disable */
-/* @relayHash 5b8bafa14a9d46263477f85f836b35e2 */
+/* @relayHash d3dcb1af362f4d815b583db72e273405 */
 
 import { ConcreteRequest } from "relay-runtime";
 import { FragmentRefs } from "relay-runtime";
 export type MyCollectionArtworkDetailQueryVariables = {
-    artworkID: string;
+    artworkSlug: string;
+    artistInternalID: string;
+    medium: string;
 };
 export type MyCollectionArtworkDetailQueryResponse = {
     readonly artwork: {
@@ -14,6 +16,9 @@ export type MyCollectionArtworkDetailQueryResponse = {
         } | null;
         readonly medium: string | null;
         readonly " $fragmentRefs": FragmentRefs<"MyCollectionArtworkHeader_artwork" | "MyCollectionArtworkMeta_artwork" | "MyCollectionArtworkInsights_artwork">;
+    } | null;
+    readonly marketPriceInsights: {
+        readonly " $fragmentRefs": FragmentRefs<"MyCollectionArtworkInsights_marketPriceInsights">;
     } | null;
 };
 export type MyCollectionArtworkDetailQuery = {
@@ -25,9 +30,11 @@ export type MyCollectionArtworkDetailQuery = {
 
 /*
 query MyCollectionArtworkDetailQuery(
-  $artworkID: String!
+  $artworkSlug: String!
+  $artistInternalID: ID!
+  $medium: String!
 ) {
-  artwork(id: $artworkID) {
+  artwork(id: $artworkSlug) {
     artist {
       internalID
       id
@@ -37,6 +44,9 @@ query MyCollectionArtworkDetailQuery(
     ...MyCollectionArtworkMeta_artwork
     ...MyCollectionArtworkInsights_artwork
     id
+  }
+  marketPriceInsights(artistId: $artistInternalID, medium: $medium) {
+    ...MyCollectionArtworkInsights_marketPriceInsights
   }
 }
 
@@ -92,6 +102,19 @@ fragment MyCollectionArtworkArtistAuctionResults_artwork on Artwork {
   }
 }
 
+fragment MyCollectionArtworkArtistMarket_marketPriceInsights on MarketPriceInsights {
+  annualLotsSold
+  annualValueSoldCents
+  sellThroughRate
+  medianSaleToEstimateRatio
+  liquidityRank
+  demandTrend
+}
+
+fragment MyCollectionArtworkDemandIndex_marketPriceInsights on MarketPriceInsights {
+  demandRank
+}
+
 fragment MyCollectionArtworkHeader_artwork on Artwork {
   artistNames
   date
@@ -106,6 +129,12 @@ fragment MyCollectionArtworkInsights_artwork on Artwork {
   ...MyCollectionArtworkArtistArticles_artwork
 }
 
+fragment MyCollectionArtworkInsights_marketPriceInsights on MarketPriceInsights {
+  ...MyCollectionArtworkDemandIndex_marketPriceInsights
+  ...MyCollectionArtworkPriceEstimate_marketPriceInsights
+  ...MyCollectionArtworkArtistMarket_marketPriceInsights
+}
+
 fragment MyCollectionArtworkMeta_artwork on Artwork {
   title
   artistNames
@@ -117,13 +146,32 @@ fragment MyCollectionArtworkMeta_artwork on Artwork {
   depth
   metric
 }
+
+fragment MyCollectionArtworkPriceEstimate_marketPriceInsights on MarketPriceInsights {
+  lowRangeCents
+  midRangeCents
+  highRangeCents
+  artsyQInventory
+}
 */
 
 const node: ConcreteRequest = (function(){
 var v0 = [
   {
     "kind": "LocalArgument",
-    "name": "artworkID",
+    "name": "artworkSlug",
+    "type": "String!",
+    "defaultValue": null
+  },
+  {
+    "kind": "LocalArgument",
+    "name": "artistInternalID",
+    "type": "ID!",
+    "defaultValue": null
+  },
+  {
+    "kind": "LocalArgument",
+    "name": "medium",
     "type": "String!",
     "defaultValue": null
   }
@@ -132,7 +180,7 @@ v1 = [
   {
     "kind": "Variable",
     "name": "id",
-    "variableName": "artworkID"
+    "variableName": "artworkSlug"
   }
 ],
 v2 = {
@@ -149,26 +197,38 @@ v3 = {
   "args": null,
   "storageKey": null
 },
-v4 = {
+v4 = [
+  {
+    "kind": "Variable",
+    "name": "artistId",
+    "variableName": "artistInternalID"
+  },
+  {
+    "kind": "Variable",
+    "name": "medium",
+    "variableName": "medium"
+  }
+],
+v5 = {
   "kind": "ScalarField",
   "alias": null,
   "name": "id",
   "args": null,
   "storageKey": null
 },
-v5 = {
+v6 = {
   "kind": "Literal",
   "name": "first",
   "value": 3
 },
-v6 = {
+v7 = {
   "kind": "ScalarField",
   "alias": null,
   "name": "title",
   "args": null,
   "storageKey": null
 },
-v7 = [
+v8 = [
   {
     "kind": "ScalarField",
     "alias": null,
@@ -224,6 +284,22 @@ return {
             "args": null
           }
         ]
+      },
+      {
+        "kind": "LinkedField",
+        "alias": null,
+        "name": "marketPriceInsights",
+        "storageKey": null,
+        "args": (v4/*: any*/),
+        "concreteType": "MarketPriceInsights",
+        "plural": false,
+        "selections": [
+          {
+            "kind": "FragmentSpread",
+            "name": "MyCollectionArtworkInsights_marketPriceInsights",
+            "args": null
+          }
+        ]
       }
     ]
   },
@@ -251,14 +327,14 @@ return {
             "plural": false,
             "selections": [
               (v2/*: any*/),
-              (v4/*: any*/),
+              (v5/*: any*/),
               {
                 "kind": "LinkedField",
                 "alias": null,
                 "name": "auctionResultsConnection",
                 "storageKey": "auctionResultsConnection(first:3,sort:\"DATE_DESC\")",
                 "args": [
-                  (v5/*: any*/),
+                  (v6/*: any*/),
                   {
                     "kind": "Literal",
                     "name": "sort",
@@ -287,7 +363,7 @@ return {
                         "plural": false,
                         "selections": [
                           (v2/*: any*/),
-                          (v6/*: any*/),
+                          (v7/*: any*/),
                           {
                             "kind": "ScalarField",
                             "alias": null,
@@ -312,7 +388,7 @@ return {
                                 "args": null,
                                 "concreteType": "Image",
                                 "plural": false,
-                                "selections": (v7/*: any*/)
+                                "selections": (v8/*: any*/)
                               }
                             ]
                           },
@@ -362,7 +438,7 @@ return {
                               }
                             ]
                           },
-                          (v4/*: any*/)
+                          (v5/*: any*/)
                         ]
                       }
                     ]
@@ -375,7 +451,7 @@ return {
                 "name": "articlesConnection",
                 "storageKey": "articlesConnection(first:3,inEditorialFeed:true,sort:\"PUBLISHED_AT_DESC\")",
                 "args": [
-                  (v5/*: any*/),
+                  (v6/*: any*/),
                   {
                     "kind": "Literal",
                     "name": "inEditorialFeed",
@@ -439,7 +515,7 @@ return {
                                 "args": null,
                                 "storageKey": null
                               },
-                              (v4/*: any*/)
+                              (v5/*: any*/)
                             ]
                           },
                           {
@@ -463,9 +539,9 @@ return {
                             "args": null,
                             "concreteType": "Image",
                             "plural": false,
-                            "selections": (v7/*: any*/)
+                            "selections": (v8/*: any*/)
                           },
-                          (v4/*: any*/)
+                          (v5/*: any*/)
                         ]
                       }
                     ]
@@ -497,9 +573,9 @@ return {
             "args": null,
             "concreteType": "Image",
             "plural": false,
-            "selections": (v7/*: any*/)
+            "selections": (v8/*: any*/)
           },
-          (v6/*: any*/),
+          (v7/*: any*/),
           {
             "kind": "ScalarField",
             "alias": null,
@@ -535,7 +611,95 @@ return {
             "args": null,
             "storageKey": null
           },
-          (v4/*: any*/)
+          (v5/*: any*/)
+        ]
+      },
+      {
+        "kind": "LinkedField",
+        "alias": null,
+        "name": "marketPriceInsights",
+        "storageKey": null,
+        "args": (v4/*: any*/),
+        "concreteType": "MarketPriceInsights",
+        "plural": false,
+        "selections": [
+          {
+            "kind": "ScalarField",
+            "alias": null,
+            "name": "demandRank",
+            "args": null,
+            "storageKey": null
+          },
+          {
+            "kind": "ScalarField",
+            "alias": null,
+            "name": "lowRangeCents",
+            "args": null,
+            "storageKey": null
+          },
+          {
+            "kind": "ScalarField",
+            "alias": null,
+            "name": "midRangeCents",
+            "args": null,
+            "storageKey": null
+          },
+          {
+            "kind": "ScalarField",
+            "alias": null,
+            "name": "highRangeCents",
+            "args": null,
+            "storageKey": null
+          },
+          {
+            "kind": "ScalarField",
+            "alias": null,
+            "name": "artsyQInventory",
+            "args": null,
+            "storageKey": null
+          },
+          {
+            "kind": "ScalarField",
+            "alias": null,
+            "name": "annualLotsSold",
+            "args": null,
+            "storageKey": null
+          },
+          {
+            "kind": "ScalarField",
+            "alias": null,
+            "name": "annualValueSoldCents",
+            "args": null,
+            "storageKey": null
+          },
+          {
+            "kind": "ScalarField",
+            "alias": null,
+            "name": "sellThroughRate",
+            "args": null,
+            "storageKey": null
+          },
+          {
+            "kind": "ScalarField",
+            "alias": null,
+            "name": "medianSaleToEstimateRatio",
+            "args": null,
+            "storageKey": null
+          },
+          {
+            "kind": "ScalarField",
+            "alias": null,
+            "name": "liquidityRank",
+            "args": null,
+            "storageKey": null
+          },
+          {
+            "kind": "ScalarField",
+            "alias": null,
+            "name": "demandTrend",
+            "args": null,
+            "storageKey": null
+          }
         ]
       }
     ]
@@ -543,11 +707,11 @@ return {
   "params": {
     "operationKind": "query",
     "name": "MyCollectionArtworkDetailQuery",
-    "id": "2432e83240de8da288cd2da0de3b7ecf",
+    "id": "464a5f6ca0dd8b604fa0127235da5066",
     "text": null,
     "metadata": {}
   }
 };
 })();
-(node as any).hash = '961d90c0e9dfc0c4d0e67455f083d3de';
+(node as any).hash = '6fafd246adf2e12064ea52e7bea6c172';
 export default node;

@@ -115,3 +115,4 @@ test-results.json
 # Ignore test artefacts
 test-results.xml
 xcode_test_raw.log
+src/lib/Scenes/MyCollection/Screens/ArtworkList/MyCollectionArtworkList.tsx

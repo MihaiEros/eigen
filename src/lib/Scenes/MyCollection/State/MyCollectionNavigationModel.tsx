@@ -8,6 +8,7 @@ import { NavigatorIOS } from "react-native"
 import { AddArtworkTitleAndYear } from "../Screens/AddArtwork/Screens/AddArtworkTitleAndYear"
 import { AdditionalDetails } from "../Screens/AddArtwork/Screens/AdditionalDetails"
 import { AddArtworkAddPhotos } from "../Screens/AddArtwork/Screens/AddPhotos"
+import { MyCollectionArtworkDetailQueryRenderer } from "../Screens/ArtworkDetail/MyCollectionArtworkDetail"
 import { ViewAllDetails } from "../Screens/ArtworkDetail/Screens/ViewAllDetails"
 import { ConsignmentsSubmissionForm } from "../Screens/ConsignmentsHome/ConsignmentsSubmissionForm"
 
@@ -49,7 +50,10 @@ export interface MyCollectionNavigationModel {
   navigateToAddArtworkPhotos: Thunk<MyCollectionNavigationModel, any, any, AppStoreModel>
   navigateToAddTitleAndYear: Action<MyCollectionNavigationModel>
   navigateToAddAdditionalDetails: Action<MyCollectionNavigationModel>
-  navigateToArtworkDetail: Action<MyCollectionNavigationModel, string>
+  navigateToArtworkDetail: Action<
+    MyCollectionNavigationModel,
+    { artistInternalID: string; artworkSlug: string; medium: string | null }
+  >
   navigateToViewAllArtworkDetails: Action<MyCollectionNavigationModel, { passProps: any }> // FIXME: any
 
   // External app locations
@@ -174,11 +178,21 @@ export const MyCollectionNavigationModel: MyCollectionNavigationModel = {
     })
   }),
 
-  navigateToArtworkDetail: action((state, artworkID) => {
-    SwitchBoard.presentNavigationViewController(
-      state.sessionState.navViewRef.current,
-      `/my-collection/artwork-detail/${artworkID}`
-    )
+  navigateToArtworkDetail: action((state, { artistInternalID, medium, artworkSlug }) => {
+    state.sessionState.navigator?.push({
+      component: MyCollectionArtworkDetailQueryRenderer,
+      passProps: {
+        artistInternalID,
+        artworkSlug,
+        medium,
+      },
+    })
+
+    // FIXME: Remove these obj-c files
+    // SwitchBoard.presentNavigationViewController(
+    //   state.sessionState.navViewRef.current,
+    //   `/my-collection/artwork-detail/${artworkSlug}`
+    // )
   }),
 
   navigateToViewAllArtworkDetails: action((state, { passProps }) => {
