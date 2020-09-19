@@ -76,6 +76,7 @@ export const MyCollectionNavigationModel: MyCollectionNavigationModel = {
   }),
 
   setNavigator: action((state, navigator) => {
+    console.warn(navigator)
     state.sessionState.navigator = navigator
   }),
 
@@ -94,6 +95,7 @@ export const MyCollectionNavigationModel: MyCollectionNavigationModel = {
   dismissModal: action((state) => {
     state.sessionState.modalType = null
     state.sessionState.infoModalType = null
+    // state.sessionState.navigator = null
   }),
 
   /**

@@ -3,6 +3,7 @@ import { AppStore } from "lib/store/AppStore"
 import React, { useEffect, useRef } from "react"
 import { View } from "react-native"
 import { Modal } from "./Components/Modal"
+import { Navigator } from "./Components/Navigator"
 import { artworkSchema, validateArtworkSchema } from "./Screens/AddArtwork/Form/artworkSchema"
 import { ArtworkFormValues } from "./State/MyCollectionArtworkModel"
 
@@ -34,12 +35,14 @@ export const setupMyCollectionScreen = (Component: React.ComponentType<any>) => 
     }, [])
 
     return (
-      <View ref={navViewRef} style={{ flex: 1 }}>
-        <FormikProvider value={initialForm}>
-          <Component {...props} />
-          <Modal />
-        </FormikProvider>
-      </View>
+      <Navigator>
+        <View ref={navViewRef} style={{ flex: 1 }}>
+          <FormikProvider value={initialForm}>
+            <Component {...props} />
+            <Modal />
+          </FormikProvider>
+        </View>
+      </Navigator>
     )
   }
 }
