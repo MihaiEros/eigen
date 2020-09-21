@@ -29,7 +29,7 @@ export function useNavigator(newNavigator: NavigatorIOS) {
 
   useEffect(() => {
     navActions.setNavigator(newNavigator)
-  }, [newNavigator])
+  }, [])
 
   return newNavigator
 }

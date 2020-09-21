@@ -35,14 +35,14 @@ export const setupMyCollectionScreen = (Component: React.ComponentType<any>) => 
     }, [])
 
     return (
-      <Navigator>
-        <View ref={navViewRef} style={{ flex: 1 }}>
-          <FormikProvider value={initialForm}>
+      <View ref={navViewRef} style={{ flex: 1 }}>
+        <FormikProvider value={initialForm}>
+          <Navigator>
             <Component {...props} />
-            <Modal />
-          </FormikProvider>
-        </View>
-      </Navigator>
+          </Navigator>
+          <Modal />
+        </FormikProvider>
+      </View>
     )
   }
 }
